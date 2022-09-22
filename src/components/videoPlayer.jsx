@@ -17,7 +17,8 @@ export default class PlayerControlExample extends Component {
     super(props, context);
 
     this.state = {
-      source: sources.bunnyMovie,
+      source: this.props.source,
+      player: { currentTime: " ", playbackRate: " " },
     };
 
     this.play = this.play.bind(this);
@@ -64,6 +65,12 @@ export default class PlayerControlExample extends Component {
     return () => {
       const { player } = this.player.getState();
       this.player.seek(player.currentTime + seconds);
+    };
+  }
+  getCurrentTime() {
+    return () => {
+      const { player } = this.player.getState();
+      console.log(player.currentTime);
     };
   }
 
@@ -254,7 +261,11 @@ export default class PlayerControlExample extends Component {
             muted=false
           </Button>
         </div>
-        <Rythmoband />
+        <Rythmoband
+          dialogue={this.props.Dialogues}
+          time={this.props.time}
+          player={this.state.player}
+        />
       </div>
     );
   }

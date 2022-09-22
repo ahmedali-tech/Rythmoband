@@ -1,0 +1,5 @@
+{
+    currentTime:"value in string as provided in srt file",
+    number: "value in int showing the dialogue number he is on",
+    position:" value in percent showing the percentage it had moved across the red line",
+}

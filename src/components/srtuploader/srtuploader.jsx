@@ -2,14 +2,16 @@ import "../../../node_modules/video-react/dist/video-react.css";
 import * as React from "react";
 import { alpha, styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
+
 import TextField, { TextFieldProps } from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import { OutlinedInputProps } from "@mui/material/OutlinedInput";
+
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useState, createContext, useContext } from "react";
+import { DialoguesContext } from "../../App";
+
+import { Link } from "react-router-dom";
+import { loadFile } from "../../services/srtreader";
 
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
@@ -76,22 +78,29 @@ export default function SrtUploader() {
   const [videoFilePathUploaded, setVideoFilePathUploaded] = useState(false);
   const [srtFilePathUploaded, setsrtFilePathUploaded] = useState(false);
   const [jsonFilePathUploaded, setjsonFilePathUploaded] = useState(false);
+  const {
+    Dialogues,
+    setDialogues,
+    Time,
+    setTime,
+    source,
+    setsource,
+    json,
+    setjson,
+  } = useContext(DialoguesContext);
 
-  const submit = () => {
-    console.log(videoFilePath);
-    console.log(srtFilePath);
-    console.log(jsonFilePath);
-  };
   const handleVideoUpload = (event) => {
-    setVideoFilePath(URL.createObjectURL(event.target.files[0]));
+    setsource(URL.createObjectURL(event.target.files[0]));
     setVideoFilePathUploaded(true);
   };
-  const handlesrtUpload = (event) => {
-    setsrtFilePath(URL.createObjectURL(event.target.files[0]));
+  const handlesrtUpload = async (event) => {
+    let { time, dialogue } = await loadFile(event.target.files[0]);
+    setDialogues(dialogue);
+    setTime(time);
     setsrtFilePathUploaded(true);
   };
   const handlejsonUpload = (event) => {
-    setjsonFilePath(URL.createObjectURL(event.target.files[0]));
+    setjson(event.target.files[0]);
     setjsonFilePathUploaded(true);
   };
 
@@ -139,13 +148,11 @@ export default function SrtUploader() {
           {jsonFilePathUploaded ? "Uploaded" : "Upload json"}
           <input type="file" onChange={handlejsonUpload} hidden />
         </Button>
-        <Button
-          variant="outlined"
-          style={{ marginTop: "20px" }}
-          onClick={submit}
-        >
-          Submit
-        </Button>
+        <Link to="/project" style={{ "text-decoration": "none" }}>
+          <Button variant="outlined" style={{ marginTop: "20px" }}>
+            Submit
+          </Button>
+        </Link>
       </div>
     </>
   );
