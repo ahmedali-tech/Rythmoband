@@ -14,7 +14,9 @@ function App() {
   const [Dialogues, setDialogues] = useState("ok");
   const [Time, setTime] = useState(" ");
   const [source, setsource] = useState(" ");
-  const [json, setjson] = useState(" ");
+  const [currentTime, setCurrentTime] = useState("");
+  const [dialogueNumber, setDialogueNumber] = useState("");
+  const [rythmoPosition, setrythmoPosition] = useState("");
   return (
     <DialoguesContext.Provider
       value={{
@@ -24,8 +26,12 @@ function App() {
         setTime,
         source,
         setsource,
-        json,
-        setjson,
+        currentTime,
+        setCurrentTime,
+        dialogueNumber,
+        setDialogueNumber,
+        rythmoPosition,
+        setrythmoPosition,
       }}
     >
       <Router>
@@ -41,6 +47,9 @@ function App() {
                   Dialogues={Dialogues}
                   time={Time}
                   source={source}
+                  currentTime={currentTime}
+                  rythmoPosition={rythmoPosition}
+                  dialogueNumber={dialogueNumber}
                 />
               }
             ></Route>

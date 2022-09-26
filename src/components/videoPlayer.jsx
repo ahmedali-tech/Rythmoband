@@ -4,6 +4,7 @@ import { Player, ControlBar } from "video-react";
 import Button from "@mui/material/Button";
 import Prism from "prismjs";
 import Rythmoband from "./rythmoband/rythmoband";
+import { getSub_Seconds, MakeJson } from "../services/srtreader";
 
 const sources = {
   sintelTrailer: "http://media.w3.org/2010/05/sintel/trailer.mp4",
@@ -22,6 +23,7 @@ export default class PlayerControlExample extends Component {
     };
 
     this.play = this.play.bind(this);
+    this.save = this.save.bind(this);
     this.pause = this.pause.bind(this);
     this.load = this.load.bind(this);
     this.changeCurrentTime = this.changeCurrentTime.bind(this);
@@ -60,11 +62,20 @@ export default class PlayerControlExample extends Component {
   load() {
     this.player.load();
   }
-
+  save() {
+    return () => {
+      MakeJson(
+        "00:10:15:650",
+        this.props.dialogueNumber,
+        this.props.rythmoPosition
+      );
+    };
+  }
   changeCurrentTime(seconds) {
     return () => {
       const { player } = this.player.getState();
       this.player.seek(player.currentTime + seconds);
+      console.log(player.currentTime);
     };
   }
   getCurrentTime() {
@@ -102,171 +113,188 @@ export default class PlayerControlExample extends Component {
       this.player.load();
     };
   }
-
+  seeker(seconds) {
+    this.seek(seconds);
+  }
   render() {
+    this.seeker(20);
     return (
-      <div
-        style={{
-          marginTop: "20px",
-          display: "flex",
-          flexDirection: "column",
+      <>
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            flexDirection: "column",
 
-          "justify-content": "center",
-          "align-items": "center",
-        }}
-      >
-        <Player
-          fluid={false}
-          width={"55%"}
-          height={430}
-          ref={(player) => {
-            this.player = player;
+            "justify-content": "center",
+            "align-items": "center",
           }}
-          autoPlay
         >
-          <source src={this.state.source} />
-          <ControlBar autoHide={false} />
-        </Player>
-        <div className="py-3" style={{ marginTop: "10px" }}>
-          <Button
-            onClick={this.play}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
+          <Player
+            fluid={false}
+            width={"55%"}
+            height={430}
+            ref={(player) => {
+              this.player = player;
+            }}
+            autoPlay
           >
-            play
-          </Button>
-          <Button
-            onClick={this.pause}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            pause
-          </Button>
-          <Button
-            onClick={this.load}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            load
-          </Button>
+            <source src={this.state.source} />
+            <ControlBar autoHide={false} />
+          </Player>
+          <div className="py-3" style={{ marginTop: "10px" }}>
+            <Button
+              onClick={this.play}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              play
+            </Button>
+            <Button
+              onClick={this.pause}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              pause
+            </Button>
+            <Button
+              onClick={this.load}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              load
+            </Button>
+          </div>
+          <div className="pb-3" style={{ marginTop: "10px" }}>
+            <Button
+              onClick={this.changeCurrentTime(10)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              currentTime += 10
+            </Button>
+            <Button
+              onClick={this.changeCurrentTime(-10)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              currentTime -= 10
+            </Button>
+            <Button
+              onClick={this.seek(50)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              currentTime = 50
+            </Button>
+          </div>
+          <div className="pb-3" style={{ marginTop: "10px" }}>
+            <Button
+              onClick={this.changePlaybackRateRate(1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              playbackRate++
+            </Button>
+            <Button
+              onClick={this.changePlaybackRateRate(-1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              playbackRate--
+            </Button>
+            <Button
+              onClick={this.changePlaybackRateRate(0.1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              playbackRate+=0.1
+            </Button>
+            <Button
+              onClick={this.changePlaybackRateRate(-0.1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              playbackRate-=0.1
+            </Button>
+          </div>
+          <div className="pb-3" style={{ marginTop: "10px" }}>
+            <Button
+              onClick={this.changeVolume(0.1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              volume+=0.1
+            </Button>
+            <Button
+              onClick={this.changeVolume(-0.1)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              volume-=0.1
+            </Button>
+            <Button
+              onClick={this.setMuted(true)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              muted=true
+            </Button>
+            <Button
+              onClick={this.setMuted(false)}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              muted=false
+            </Button>
+            <Button
+              onClick={this.save()}
+              variant="contained"
+              component="label"
+              color="primary"
+              style={{ marginLeft: "10px" }}
+            >
+              save project
+            </Button>
+          </div>
+          <Rythmoband
+            dialogue={this.props.Dialogues}
+            time={this.props.time}
+            player={this.state.player}
+            dialogueNumber={this.props.dialogueNumber}
+            rythmoPosition={this.props.rythmoPosition}
+          />
         </div>
-        <div className="pb-3" style={{ marginTop: "10px" }}>
-          <Button
-            onClick={this.changeCurrentTime(10)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            currentTime += 10
-          </Button>
-          <Button
-            onClick={this.changeCurrentTime(-10)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            currentTime -= 10
-          </Button>
-          <Button
-            onClick={this.seek(50)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            currentTime = 50
-          </Button>
-        </div>
-        <div className="pb-3" style={{ marginTop: "10px" }}>
-          <Button
-            onClick={this.changePlaybackRateRate(1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            playbackRate++
-          </Button>
-          <Button
-            onClick={this.changePlaybackRateRate(-1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            playbackRate--
-          </Button>
-          <Button
-            onClick={this.changePlaybackRateRate(0.1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            playbackRate+=0.1
-          </Button>
-          <Button
-            onClick={this.changePlaybackRateRate(-0.1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            playbackRate-=0.1
-          </Button>
-        </div>
-        <div className="pb-3" style={{ marginTop: "10px" }}>
-          <Button
-            onClick={this.changeVolume(0.1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            volume+=0.1
-          </Button>
-          <Button
-            onClick={this.changeVolume(-0.1)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            volume-=0.1
-          </Button>
-          <Button
-            onClick={this.setMuted(true)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            muted=true
-          </Button>
-          <Button
-            onClick={this.setMuted(false)}
-            variant="contained"
-            component="label"
-            color="primary"
-            style={{ marginLeft: "10px" }}
-          >
-            muted=false
-          </Button>
-        </div>
-        <Rythmoband
-          dialogue={this.props.Dialogues}
-          time={this.props.time}
-          player={this.state.player}
-        />
-      </div>
+        <div id="container"></div>
+      </>
     );
   }
 }

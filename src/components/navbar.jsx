@@ -52,26 +52,6 @@ export default function Navbar() {
               <span>Home</span>
             </Link>
           </CustomButton>
-
-          <CustomButton variant="text">
-            <Link
-              to="/projectlist"
-              style={{ color: "black", "text-decoration": "none" }}
-            >
-              <NoteIcon />
-              Project
-            </Link>
-          </CustomButton>
-
-          <CustomButton variant="text">
-            <Link
-              to="/project"
-              style={{ color: "black", "text-decoration": "none" }}
-            >
-              <VideocamIcon />
-              Projection
-            </Link>
-          </CustomButton>
         </Stack>
         <strong style={{ position: "absolute", top: "23%", left: "53%" }}>
           dr er

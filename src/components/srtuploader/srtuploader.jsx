@@ -12,6 +12,7 @@ import { DialoguesContext } from "../../App";
 
 import { Link } from "react-router-dom";
 import { loadFile } from "../../services/srtreader";
+import { loadJson } from "../../services/srtreader";
 
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
@@ -85,8 +86,12 @@ export default function SrtUploader() {
     setTime,
     source,
     setsource,
-    json,
-    setjson,
+    currentTime,
+    setCurrentTime,
+    dialogueNumber,
+    setDialogueNumber,
+    rythmoPosition,
+    setrythmoPosition,
   } = useContext(DialoguesContext);
 
   const handleVideoUpload = (event) => {
@@ -99,8 +104,15 @@ export default function SrtUploader() {
     setTime(time);
     setsrtFilePathUploaded(true);
   };
-  const handlejsonUpload = (event) => {
-    setjson(event.target.files[0]);
+  const handlejsonUpload = async (event) => {
+    let { currentTime, dial_number, rythmo_position } = await loadJson(
+      event.target.files[0]
+    );
+    console.log({ currentTime, dial_number, rythmo_position });
+
+    setCurrentTime(currentTime);
+    setDialogueNumber(dial_number);
+    setrythmoPosition(rythmo_position);
     setjsonFilePathUploaded(true);
   };
 

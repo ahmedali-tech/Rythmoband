@@ -1,6 +1,7 @@
 var raw_lines = [];
 var time = [];
 var dialogue = [];
+var currentTime, dial_number, rythmo_position;
 async function loadFile(file) {
   time.length = 0;
   dialogue.length = 0;
@@ -77,8 +78,46 @@ function getSub_Millis(param) {
     hours * 3600000 + minutes * 60000 + seconds * 1000 + millis;
   return total_millis;
 }
+
+async function loadJson(file) {
+  var loaded_Json_data = await file.text();
+  var decoded = JSON.parse(loaded_Json_data);
+  currentTime = decoded["currentTime"];
+  dial_number = decoded["number"];
+  rythmo_position = decoded["position"];
+  return { currentTime, dial_number, rythmo_position };
+}
+
+function PrintJson() {
+  document.getElementById("output").innerHTML =
+    " " + currentTime + " " + dial_number + " " + rythmo_position;
+}
+
+function MakeJson(currentTime, dial_number, rythmo_position) {
+  var dict = {
+    currentTime: currentTime,
+    number: dial_number,
+    position: rythmo_position,
+  };
+
+  var data =
+    "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dict));
+
+  var a = document.createElement("a");
+  a.href = "data:" + data;
+  a.download = "data.json";
+  a.innerHTML = "";
+
+  var container = document.getElementById("container");
+  container.appendChild(a);
+  a.click();
+  container.removeChild(a);
+}
 exports.loadFile = loadFile;
 exports.makeSubs = makeSubs;
 exports.getSub_Seconds = getSub_Seconds;
 
 exports.getSub_Millis = getSub_Millis;
+exports.MakeJson = MakeJson;
+exports.PrintJson = PrintJson;
+exports.loadJson = loadJson;
