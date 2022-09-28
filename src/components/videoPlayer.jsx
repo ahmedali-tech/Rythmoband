@@ -4,7 +4,7 @@ import { Player, ControlBar } from "video-react";
 import Button from "@mui/material/Button";
 import Prism from "prismjs";
 import Rythmoband from "./rythmoband/rythmoband";
-import { getSub_Seconds, MakeJson } from "../services/srtreader";
+import { getSub_Seconds, MakeJson, ToSrtTime } from "../services/srtreader";
 
 const sources = {
   sintelTrailer: "http://media.w3.org/2010/05/sintel/trailer.mp4",
@@ -18,6 +18,7 @@ export default class PlayerControlExample extends Component {
     super(props, context);
 
     this.state = {
+      initialPlay: true,
       source: this.props.source,
       player: { currentTime: " ", playbackRate: " " },
     };
@@ -53,6 +54,15 @@ export default class PlayerControlExample extends Component {
 
   play() {
     this.player.play();
+
+    if (this.state.initialPlay) {
+      this.setState({ initialPlay: false });
+      this.player.seek(
+        this.props.currentTime === undefined
+          ? 0
+          : getSub_Seconds(this.props.currentTime)
+      );
+    }
   }
 
   pause() {
@@ -64,8 +74,9 @@ export default class PlayerControlExample extends Component {
   }
   save() {
     return () => {
+      const { player } = this.player.getState();
       MakeJson(
-        "00:10:15:650",
+        ToSrtTime(player.currentTime),
         this.props.dialogueNumber,
         this.props.rythmoPosition
       );
@@ -114,10 +125,12 @@ export default class PlayerControlExample extends Component {
     };
   }
   seeker(seconds) {
-    this.seek(seconds);
+    return () => {
+      const { player } = this.player.getState();
+      this.player.currentTime = player.currentTime + seconds;
+    };
   }
   render() {
-    this.seeker(20);
     return (
       <>
         <div
@@ -137,7 +150,6 @@ export default class PlayerControlExample extends Component {
             ref={(player) => {
               this.player = player;
             }}
-            autoPlay
           >
             <source src={this.state.source} />
             <ControlBar autoHide={false} />

@@ -15,8 +15,9 @@ function App() {
   const [Time, setTime] = useState(" ");
   const [source, setsource] = useState(" ");
   const [currentTime, setCurrentTime] = useState("");
-  const [dialogueNumber, setDialogueNumber] = useState("");
-  const [rythmoPosition, setrythmoPosition] = useState("");
+  const [dialogueNumber, setDialogueNumber] = useState(undefined);
+  const [rythmoPosition, setrythmoPosition] = useState(undefined);
+  const [projectName, setprojectName] = useState(undefined);
   return (
     <DialoguesContext.Provider
       value={{
@@ -32,11 +33,13 @@ function App() {
         setDialogueNumber,
         rythmoPosition,
         setrythmoPosition,
+        projectName,
+        setprojectName,
       }}
     >
       <Router>
         <div className="App">
-          <Navbar />
+          <Navbar projectName={projectName} />
           <Routes>
             <Route exact path="/" element={<SrtUploader />}></Route>
             <Route

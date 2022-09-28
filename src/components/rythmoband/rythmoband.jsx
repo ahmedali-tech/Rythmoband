@@ -6,9 +6,13 @@ import { Button } from "reactstrap";
 import { getSub_Millis } from "../../services/srtreader";
 
 export default function Rythmoband(props) {
-  const initialPosition = useRef(props.rythmoPosition);
+  const initialPosition = useRef(
+    props.rythmoPosition === undefined ? "30%" : props.rythmoPosition
+  );
 
-  const [number, setnumber] = useState(props.dialogueNumber);
+  const [number, setnumber] = useState(
+    props.dialogueNumber === undefined ? 0 : props.dialogueNumber
+  );
   const [timerCheck, setTimerCheck] = useState(true);
   const [moverNumber, setMoverNumber] = useState(0.001);
   const [currentTime, setCurrentTime] = useState(0);
@@ -17,7 +21,6 @@ export default function Rythmoband(props) {
     let x = parseFloat(initialPosition.current);
     let start = getSub_Millis(props.time[number][0]);
     let end = getSub_Millis(props.time[number][1]);
-    console.log(initialPosition.current);
 
     let timeToMove = start - end;
     setMoverNumber((timeToMove / 2500) * props.player.playbackRate);
@@ -28,7 +31,6 @@ export default function Rythmoband(props) {
     initialPosition.current = y;
   };
   setTimeout(() => {
-    console.log(props.rythmoPosition, props.dialogueNumber);
     textMover();
     timercheck();
     backChecker();

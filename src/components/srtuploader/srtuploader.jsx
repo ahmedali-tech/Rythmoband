@@ -7,6 +7,7 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import logo from "../../images/logo.png";
 import { useState, createContext, useContext } from "react";
 import { DialoguesContext } from "../../App";
 
@@ -92,9 +93,12 @@ export default function SrtUploader() {
     setDialogueNumber,
     rythmoPosition,
     setrythmoPosition,
+    projectName,
+    setprojectName,
   } = useContext(DialoguesContext);
 
   const handleVideoUpload = (event) => {
+    setprojectName(event.target.files[0].name);
     setsource(URL.createObjectURL(event.target.files[0]));
     setVideoFilePathUploaded(true);
   };
@@ -120,13 +124,18 @@ export default function SrtUploader() {
     <>
       <div
         style={{
-          marginTop: "300px",
+          marginTop: "150px",
           display: "flex",
           flexDirection: "column",
           "justify-content": "center",
           "align-items": "center",
         }}
       >
+        <img
+          src={logo}
+          alt="this is logo"
+          style={{ height: "200px", width: "800px" }}
+        />
         <Button
           variant="contained"
           component="label"
@@ -160,6 +169,7 @@ export default function SrtUploader() {
           {jsonFilePathUploaded ? "Uploaded" : "Upload json"}
           <input type="file" onChange={handlejsonUpload} hidden />
         </Button>
+
         <Link to="/project" style={{ "text-decoration": "none" }}>
           <Button variant="outlined" style={{ marginTop: "20px" }}>
             Submit

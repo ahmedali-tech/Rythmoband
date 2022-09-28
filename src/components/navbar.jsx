@@ -12,7 +12,7 @@ import { styled } from "@mui/system";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+export default function Navbar(props) {
   const [value, setValue] = React.useState(0);
   const blue = {
     500: "#007FFF",
@@ -53,12 +53,21 @@ export default function Navbar() {
             </Link>
           </CustomButton>
         </Stack>
-        <strong style={{ position: "absolute", top: "23%", left: "53%" }}>
-          dr er
-        </strong>
-        <text style={{ position: "absolute", top: "23%", left: "45%" }}>
-          Project en cours:
-        </text>
+
+        {props.projectName === undefined ? (
+          <></>
+        ) : (
+          <>
+            {" "}
+            <strong style={{ position: "absolute", top: "23%", left: "53%" }}>
+              {props.projectName}
+            </strong>{" "}
+            <text style={{ position: "absolute", top: "23%", left: "45%" }}>
+              Project en cours:
+            </text>
+          </>
+        )}
+
         <Button
           style={{
             position: "absolute",

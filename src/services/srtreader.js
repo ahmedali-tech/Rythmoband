@@ -113,6 +113,41 @@ function MakeJson(currentTime, dial_number, rythmo_position) {
   a.click();
   container.removeChild(a);
 }
+var hours,
+  mins,
+  secs,
+  mills,
+  d = 0;
+
+function ToSrtTime(value) {
+  if (Number.isInteger(value)) {
+    d = value;
+  } else {
+    var decimalStr = value.toString().split(".")[1];
+    var dec = Number(decimalStr);
+  }
+
+  d = Number(value);
+  hours = Math.floor(d / 3600);
+  mins = Math.floor((d % 3600) / 60);
+  secs = Math.floor((d % 3600) % 60);
+  if (getlength(dec) == 1) {
+    mills = dec * 100;
+  } else if (getlength(dec) == 2) {
+    mills = dec * 10;
+  } else {
+    mills = dec;
+  }
+  console.log(hours);
+  console.log(mins);
+  console.log(secs);
+  console.log(mills);
+
+  return `${hours}:${mins}:${secs}:${mills}`;
+}
+function getlength(number) {
+  return number.toString().length;
+}
 exports.loadFile = loadFile;
 exports.makeSubs = makeSubs;
 exports.getSub_Seconds = getSub_Seconds;
@@ -121,3 +156,5 @@ exports.getSub_Millis = getSub_Millis;
 exports.MakeJson = MakeJson;
 exports.PrintJson = PrintJson;
 exports.loadJson = loadJson;
+exports.ToSrtTime = ToSrtTime;
+exports.getlength = getlength;
